@@ -1,0 +1,6 @@
+# build
+build/
+
+# IDE
+*.code-workspace
+.vscode/
