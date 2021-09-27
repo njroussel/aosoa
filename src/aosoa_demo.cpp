@@ -26,12 +26,24 @@ int32_t averagePositionAOS(std::array<Obj, N>& arr) {
                          [](int sum, Obj& obj) { return sum + obj.position; }) /
          N;
 }
+
 int32_t averagePositionSOA(SoaObj& soa) {
   return std::accumulate(soa.position.begin(), soa.position.end(), 0) / N;
 }
 
+struct MyInt {};
+struct MyFloat {};
+
 int main() {
-  AOSOA<AOS, int, float> meme;
+  aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, N, int, MyInt, float, MyFloat> myAos;
+  aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, N, int, MyInt, float, MyFloat> mySoa;
+  myAos.function();
+  mySoa.function();
+
+  int outAos = myAos.get<int, MyInt>(0);
+  int outSoa = mySoa.get<int, MyInt>(1);
+  std::cout << "outAos: " << outAos << std::endl;
+  std::cout << "outSoa: " << outSoa << std::endl;
 
   //
   std::array<Obj, N> aos;
