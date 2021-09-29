@@ -1,4 +1,5 @@
 #include <aosoa/aosoa.h>
+#include <aosoa/named_tuple.h>
 
 #include <array>
 #include <chrono>
@@ -44,6 +45,8 @@ int main() {
   int outSoa = mySoa.get<int, MyInt>(1);
   std::cout << "outAos: " << outAos << std::endl;
   std::cout << "outSoa: " << outSoa << std::endl;
+
+  using MyNameTuple = aosoa::NamedTuple2<int, MyInt, float, MyFloat>;
 
   //
   std::array<Obj, N> aos;
