@@ -54,10 +54,11 @@ int main() {
   MyNameTuple2 myTuple2(1, tupleFloat);
 
   std::cout << "tuple:" << std::endl;
-  /*
   std::cout << "tuple->int: " << myTuple.get<int, MyInt>() << std::endl;
   std::cout << "tuple->float: " << myTuple.get<float, MyFloat>() << std::endl;
-  */
+
+  aosoa::NEW_AOSOA<aosoa::ARRAY_OF_STRUCTURES, MyNameTuple> myNewAos;
+  aosoa::NEW_AOSOA<aosoa::STRUCTURE_OF_ARRAYS, MyNameTuple> myNewSoa;
 
   std::tuple<int> tmp;
 

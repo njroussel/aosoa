@@ -1,7 +1,10 @@
 #pragma once
+#include <aosoa/named_tuple.h>
+
 #include <array>
 #include <iostream>
 #include <type_traits>
+#include <vector>
 
 namespace aosoa {
 enum MemoryLayout {
@@ -71,5 +74,69 @@ struct AOSOA<STRUCTURE_OF_ARRAYS, N, T1, Name1, T2, Name2> {
   };
 
   std::array<Struct, N> m_arr;
+};
+template <MemoryLayout layout, typename NamedTuple>
+struct NEW_AOSOA;
+
+template <typename Type, typename Name, typename... Tail>
+struct NEW_AOSOA<ARRAY_OF_STRUCTURES, NamedTuple<Type, Name, Tail...>> {
+  using tuple_type = NamedTuple<Type, Name, Tail...>;
+
+  void function() { std::cout << "SOA" << std::endl; }
+
+  template <typename AttrType, typename AttrName>
+  AttrType get(std::size_t index) {
+    return m_arr[index].template get<AttrType, AttrName>();
+  }
+
+  tuple_type get(std::size_t index) { return m_arr[index]; }
+
+ private:
+  std::vector<tuple_type> m_arr;
+};
+
+template <typename Type, typename Name, typename... Tail>
+struct NEW_AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Type, Name, Tail...>> {
+  using tuple_type = NamedTuple<Type, Name, Tail...>;
+
+  void function() { std::cout << "AOS" << std::endl; }
+
+  template <typename AttrType, typename AttrName>
+  AttrType get(std::size_t index) {
+    constexpr bool match = std::is_same<AttrType, Type>::value &&
+                           std::is_same<AttrName, Name>::value;
+    if constexpr (match) {
+      return m_vec[index];
+    } else {
+      return m_tail.get(index);
+    }
+  }
+
+ private:
+  std::vector<Type> m_vec;
+  NEW_AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Tail...>> m_tail;
+};
+
+template <typename Type, typename Name>
+struct NEW_AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Type, Name>> {
+  using tuple_type = NamedTuple<Type, Name>;
+
+  void function() { std::cout << "AOS" << std::endl; }
+
+  template <typename AttrType, typename AttrName>
+  AttrType get(std::size_t index) {
+    constexpr bool match = std::is_same<AttrType, Type>::value &&
+                           std::is_same<AttrName, Name>::value;
+    if constexpr (!match) {
+      static_assert(
+          match,
+          "Template values do match the attribute type and attribute name!");
+    } else {
+      return m_vec[index];
+    }
+  }
+
+ private:
+  std::vector<Type> m_vec;
 };
 }  // namespace aosoa
