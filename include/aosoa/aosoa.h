@@ -14,7 +14,7 @@ template <MemoryLayout layout, std::size_t N, typename T1, typename Name1,
 struct AOSOA {
   static_assert(!(std::is_same<Name1, Name2>::value));
   void function() {}
-  template <typename T, typename Name>
+  template <typename T, typename ParamName>
   T get(std::size_t index) {
     return T();
   }
@@ -25,12 +25,12 @@ template <std::size_t N, typename T1, typename Name1, typename T2,
 struct AOSOA<ARRAY_OF_STRUCTURES, N, T1, Name1, T2, Name2> {
   void function() { std::cout << "SOA" << std::endl; }
 
-  template <typename T, typename Name>
+  template <typename T, typename ParamName>
   T get(std::size_t index) {
     constexpr bool match1 =
-        std::is_same<T, T1>::value && std::is_same<Name, Name1>::value;
+        std::is_same<T, T1>::value && std::is_same<ParamName, Name1>::value;
     constexpr bool match2 =
-        std::is_same<T, T2>::value && std::is_same<Name, Name2>::value;
+        std::is_same<T, T2>::value && std::is_same<ParamName, Name2>::value;
     static_assert(match1 || match2);
 
     if constexpr (match1) {
@@ -49,12 +49,12 @@ template <std::size_t N, typename T1, typename Name1, typename T2,
 struct AOSOA<STRUCTURE_OF_ARRAYS, N, T1, Name1, T2, Name2> {
   void function() { std::cout << "AOS" << std::endl; }
 
-  template <typename T, typename Name>
+  template <typename T, typename ParamName>
   T get(std::size_t index) {
     constexpr bool match1 =
-        std::is_same<T, T1>::value && std::is_same<Name, Name1>::value;
+        std::is_same<T, T1>::value && std::is_same<ParamName, Name1>::value;
     constexpr bool match2 =
-        std::is_same<T, T2>::value && std::is_same<Name, Name2>::value;
+        std::is_same<T, T2>::value && std::is_same<ParamName, Name2>::value;
     static_assert(match1 || match2);
 
     if constexpr (match1) {
