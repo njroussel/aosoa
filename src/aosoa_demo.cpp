@@ -47,6 +47,17 @@ int main() {
   std::cout << "outSoa: " << outSoa << std::endl;
 
   using MyNameTuple = aosoa::NamedTuple2<int, MyInt, float, MyFloat>;
+  using MyNameTuple2 = aosoa::NamedTuple2<int, MyInt, float, MyFloat>;
+
+  const float tupleFloat = 2.5F;
+  MyNameTuple myTuple(1, tupleFloat);
+  MyNameTuple2 myTuple2(1, tupleFloat);
+
+  std::cout << "tuple:" << std::endl;
+  std::cout << "tuple->int: " << myTuple.get<int, MyInt>() << std::endl;
+  std::cout << "tuple->float: " << myTuple.get<float, MyFloat>() << std::endl;
+
+  std::tuple<int> tmp;
 
   //
   std::array<Obj, N> aos;
