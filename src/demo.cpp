@@ -42,9 +42,6 @@ int main() {
   customers.push_back(c2);
   customers.push_back(c3);
 
-  // customers.other_get<Balance>(2);
-  float x = c1.get<Balance>();
-
   std::cout << findMaxCustomerId(customers) << std::endl;
   std::cout << averageBalance(customers) << std::endl;
 
