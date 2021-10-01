@@ -16,6 +16,9 @@ struct MyInt {};
 struct MyFloat {};
 using MyNamedTuple = aosoa::NamedTuple<int, MyInt, float, MyFloat>;
 
+// The function is templated here to reduce code duplication. In more
+// conventional use cases, it should be possible to pass a `typedef` of some
+// `aosoa::AOSOA` specialization.
 template <aosoa::MemoryLayout layout>
 int32_t averageInt(aosoa::AOSOA<layout, MyNamedTuple>& aosoa) {
   int size = (int)aosoa.size();
@@ -28,6 +31,8 @@ int32_t averageInt(aosoa::AOSOA<layout, MyNamedTuple>& aosoa) {
   return sum / size;
 }
 
+// Same remark as for `averageInt`: the function is exceptionnaly templated for
+// the purpose of the benchmark
 template <aosoa::MemoryLayout layout>
 double averageFloat(aosoa::AOSOA<layout, MyNamedTuple>& aosoa) {
   int size = (int)aosoa.size();

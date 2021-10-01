@@ -2,34 +2,31 @@
 #include <aosoa/named_tuple.h>
 #include <limits.h>
 
+// Define a named tuple using empty structs for naming
 struct CustomerId {};
 struct Balance {};
 using Customer = aosoa::NamedTuple<int, CustomerId, float, Balance>;
 
-// using Customers = aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, Customer>;
-using Customers = aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, Customer>;
+// Data layout can be changed in a single line by modifying the first
+// template arugment
+using Customers = aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, Customer>;
+// using Customers = aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, Customer>;
 
 int findMaxCustomerId(Customers customers) {
   std::size_t size = customers.size();
+  // The `size()` method returns either the size of the underlying arrays (SOA)
+  // or the origial array (AOS).
+
   int maxCustomerId = INT_MIN;
   for (size_t i = 0; i < size; ++i) {
     int customerId = customers.get<CustomerId>(i);
+    // Attribute access is independent of data layout - this will not have
+    // to be refactored if the `Customers` data layout is changed
+
     maxCustomerId = std::max(maxCustomerId, customerId);
   }
 
   return maxCustomerId;
-}
-
-float averageBalance(Customers customers) {
-  std::size_t size = customers.size();
-  float sum = 0.0F;
-
-  for (size_t i = 0; i < size; ++i) {
-    float customerBalance = customers.get<Balance>(i);
-    sum += customerBalance;
-  }
-
-  return sum / std::max(1.0F, (float)size);
 }
 
 int main() {
@@ -43,7 +40,6 @@ int main() {
   customers.push_back(c3);
 
   std::cout << findMaxCustomerId(customers) << std::endl;
-  std::cout << averageBalance(customers) << std::endl;
 
   return EXIT_SUCCESS;
 }
