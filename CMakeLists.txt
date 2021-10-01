@@ -34,7 +34,12 @@ add_executable(benchmark
     src/benchmark.cpp
     )
 
-add_executable(demo
+add_executable(named_tuple_demo
     # Source files
-    src/demo.cpp
+    src/named_tuple_demo.cpp
+    )
+
+add_executable(aosoa_demo
+    # Source files
+    src/aosoa_demo.cpp
     )
