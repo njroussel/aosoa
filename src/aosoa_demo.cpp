@@ -2,7 +2,8 @@
 #include <aosoa/named_tuple.h>
 #include <limits.h>
 
-// Define a named tuple using empty structs for naming
+// Define a named tuple which will replace the `struct` in a traditional array
+// of structures (AOS) layout
 struct CustomerId {};
 struct Balance {};
 using Customer = aosoa::NamedTuple<int, CustomerId, float, Balance>;
