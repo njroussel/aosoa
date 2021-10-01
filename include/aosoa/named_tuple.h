@@ -36,12 +36,12 @@ class NamedTuple {
   template <typename AttrName>
   typename named_tuple_attribute_type<AttrName,
                                       NamedTuple<Type, Name, Tail...>>::type&
-  other_get() {
+  get() {
     constexpr bool match = std::is_same<AttrName, Name>::value;
     if constexpr (match) {
       return m_attr;
     } else {
-      return m_tail.template other_get<AttrName>();
+      return m_tail.template get<AttrName>();
     }
   }
 
@@ -58,7 +58,7 @@ class NamedTuple<Type, Name> {
   NamedTuple(Type attr) : m_attr(attr) {}
 
   template <typename AttrName>
-  Type& other_get() {
+  Type& get() {
     constexpr bool match = std::is_same<AttrName, Name>::value;
     if constexpr (!match) {
       static_assert(match,

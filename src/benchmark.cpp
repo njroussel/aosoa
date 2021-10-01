@@ -21,7 +21,7 @@ int32_t averageInt(aosoa::AOSOA<layout, MyNamedTuple>& aosoa) {
   int size = (int)aosoa.size();
   int sum = 0;
   for (std::size_t i = 0; i < size; ++i) {
-    sum += aosoa.template get<int, MyInt>(i);
+    sum += aosoa.template get<MyInt>(i);
   }
 
   size = std::max(1, size);
@@ -33,7 +33,7 @@ double averageFloat(aosoa::AOSOA<layout, MyNamedTuple>& aosoa) {
   int size = (int)aosoa.size();
   double sum = 0;
   for (std::size_t i = 0; i < size; ++i) {
-    sum += aosoa.template get<float, MyFloat>(i);
+    sum += aosoa.template get<MyFloat>(i);
   }
 
   size = std::max(1, size);

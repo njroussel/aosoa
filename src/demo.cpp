@@ -13,7 +13,7 @@ int findMaxCustomerId(Customers customers) {
   std::size_t size = customers.size();
   int maxCustomerId = INT_MIN;
   for (size_t i = 0; i < size; ++i) {
-    int customerId = customers.get<int, CustomerId>(i);
+    int customerId = customers.get<CustomerId>(i);
     maxCustomerId = std::max(maxCustomerId, customerId);
   }
 
@@ -25,7 +25,7 @@ float averageBalance(Customers customers) {
   float sum = 0.0F;
 
   for (size_t i = 0; i < size; ++i) {
-    float customerBalance = customers.get<float, Balance>(i);
+    float customerBalance = customers.get<Balance>(i);
     sum += customerBalance;
   }
 
@@ -43,7 +43,7 @@ int main() {
   customers.push_back(c3);
 
   // customers.other_get<Balance>(2);
-  float x = c1.other_get<Balance>();
+  float x = c1.get<Balance>();
 
   std::cout << findMaxCustomerId(customers) << std::endl;
   std::cout << averageBalance(customers) << std::endl;

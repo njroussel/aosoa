@@ -22,9 +22,10 @@ struct AOSOA<ARRAY_OF_STRUCTURES, NamedTuple<Type, Name, Tail...>> {
 
   std::size_t size() { return m_vec.size(); }
 
-  template <typename AttrType, typename AttrName>
-  AttrType& get(std::size_t index) {
-    return m_vec[index].template other_get<AttrName>();
+  template <typename AttrName>
+  typename named_tuple_attribute_type<AttrName, tuple_type>::type& get(
+      std::size_t index) {
+    return m_vec[index].template get<AttrName>();
   }
 
   void push_back(NamedTuple<Type, Name, Tail...>& tuple) {
@@ -43,29 +44,19 @@ struct AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Type, Name, Tail...>> {
 
   std::size_t size() { return m_vec.size(); }
 
-  template <typename AttrType, typename AttrName>
-  AttrType& get(std::size_t index) {
-    constexpr bool match = std::is_same<AttrType, Type>::value &&
-                           std::is_same<AttrName, Name>::value;
-    if constexpr (match) {
-      return m_vec[index];
-    } else {
-      return m_tail.template get<AttrType, AttrName>(index);
-    }
-  }
-
-  template <typename AttrType, typename AttrName>
-  AttrType other_get(std::size_t index) {
+  template <typename AttrName>
+  typename named_tuple_attribute_type<AttrName, tuple_type>::type& get(
+      std::size_t index) {
     constexpr bool match = std::is_same<AttrName, Name>::value;
     if constexpr (match) {
       return m_vec[index];
     } else {
-      return m_tail.template other_get<AttrName>(index);
+      return m_tail.template get<AttrName>(index);
     }
   }
 
   void push_back(NamedTuple<Type, Name, Tail...>& tuple) {
-    m_vec.push_back(tuple.template other_get<Name>());
+    m_vec.push_back(tuple.template get<Name>());
     m_tail.push_back(tuple.tail());
   }
 
@@ -82,21 +73,8 @@ struct AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Type, Name>> {
 
   std::size_t size() { return m_vec.size(); }
 
-  template <typename AttrType, typename AttrName>
-  AttrType& get(std::size_t index) {
-    constexpr bool match = std::is_same<AttrType, Type>::value &&
-                           std::is_same<AttrName, Name>::value;
-    if constexpr (!match) {
-      static_assert(
-          match,
-          "Template values do match the attribute type and attribute name!");
-    } else {
-      return m_vec[index];
-    }
-  }
-
   template <typename AttrName>
-  Type other_get(std::size_t index) {
+  Type& get(std::size_t index) {
     constexpr bool match = std::is_same<AttrName, Name>::value;
     if constexpr (!match) {
       static_assert(match, "Template value does not match the attribute name!");
@@ -106,7 +84,7 @@ struct AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Type, Name>> {
   }
 
   void push_back(NamedTuple<Type, Name>& tuple) {
-    m_vec.push_back(tuple.template other_get<Name>());
+    m_vec.push_back(tuple.template get<Name>());
   }
 
  private:
