@@ -74,7 +74,8 @@ struct AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Type, Name>> {
   std::size_t size() { return m_vec.size(); }
 
   template <typename AttrName>
-  Type& get(std::size_t index) {
+  typename named_tuple_attribute_type<AttrName, tuple_type>::type& get(
+      std::size_t index) {
     constexpr bool match = std::is_same<AttrName, Name>::value;
     if constexpr (!match) {
       static_assert(match, "Template value does not match the attribute name!");

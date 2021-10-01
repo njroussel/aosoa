@@ -58,7 +58,8 @@ class NamedTuple<Type, Name> {
   NamedTuple(Type attr) : m_attr(attr) {}
 
   template <typename AttrName>
-  Type& get() {
+  typename named_tuple_attribute_type<AttrName, NamedTuple<Type, Name>>::type&
+  get() {
     constexpr bool match = std::is_same<AttrName, Name>::value;
     if constexpr (!match) {
       static_assert(match,
@@ -71,5 +72,4 @@ class NamedTuple<Type, Name> {
  private:
   Type m_attr;
 };
-
 }  // namespace aosoa
