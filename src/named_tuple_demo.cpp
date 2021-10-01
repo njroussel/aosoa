@@ -1,5 +1,4 @@
 #include <aosoa/named_tuple.h>
-#include <limits.h>
 
 // Define tuple element names by using empty structs
 struct CustomerId {};
