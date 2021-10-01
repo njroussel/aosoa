@@ -7,88 +7,74 @@
 #include <random>
 #include <tuple>
 
-const constexpr int N = 200000;
+const constexpr int N = 20000000;
 
-const constexpr int POS_MAX = 10;
-const constexpr int POS_MIN = 0;
-
-struct Obj {
-  int32_t position{};
-  float value{};
-};
-
-struct SoaObj {
-  std::array<int32_t, N> position{};
-  std::array<float, N> value{};
-};
-
-int32_t averagePositionAOS(std::array<Obj, N>& arr) {
-  return std::accumulate(arr.begin(), arr.end(), 0,
-                         [](int sum, Obj& obj) { return sum + obj.position; }) /
-         N;
-}
-
-int32_t averagePositionSOA(SoaObj& soa) {
-  return std::accumulate(soa.position.begin(), soa.position.end(), 0) / N;
-}
+const constexpr int SAMPLE_MAX = 10;
+const constexpr int SAMPLE_MIN = 0;
 
 struct MyInt {};
 struct MyFloat {};
+using MyNamedTuple = aosoa::NamedTuple<int, MyInt, float, MyFloat>;
+
+template <aosoa::MemoryLayout layout>
+int32_t averageInt(aosoa::AOSOA<layout, MyNamedTuple>& aosoa) {
+  int size = (int)aosoa.size();
+  int sum = 0;
+  for (std::size_t i = 0; i < size; ++i) {
+    sum += aosoa.template get<int, MyInt>(i);
+  }
+
+  size = std::max(1, size);
+  return sum / size;
+}
+
+template <aosoa::MemoryLayout layout>
+double averageFloat(aosoa::AOSOA<layout, MyNamedTuple>& aosoa) {
+  int size = (int)aosoa.size();
+  double sum = 0;
+  for (std::size_t i = 0; i < size; ++i) {
+    sum += aosoa.template get<float, MyFloat>(i);
+  }
+
+  size = std::max(1, size);
+  return sum / (double)size;
+}
 
 int main() {
-  aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, N, int, MyInt, float, MyFloat> myAos;
-  aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, N, int, MyInt, float, MyFloat> mySoa;
-  myAos.function();
-  mySoa.function();
-
-  int outAos = myAos.get<int, MyInt>(0);
-  int outSoa = mySoa.get<int, MyInt>(1);
-  std::cout << "outAos: " << outAos << std::endl;
-  std::cout << "outSoa: " << outSoa << std::endl;
-
-  using MyNameTuple = aosoa::NamedTuple<int, MyInt, float, MyFloat>;
-  using MyNameTuple2 = aosoa::NamedTuple<int, MyInt, float, MyFloat>;
-
-  const float tupleFloat = 2.5F;
-  MyNameTuple myTuple(1, tupleFloat);
-  MyNameTuple2 myTuple2(1, tupleFloat);
-
-  std::cout << "tuple:" << std::endl;
-  std::cout << "tuple->int: " << myTuple.get<int, MyInt>() << std::endl;
-  std::cout << "tuple->float: " << myTuple.get<float, MyFloat>() << std::endl;
-
-  aosoa::NEW_AOSOA<aosoa::ARRAY_OF_STRUCTURES, MyNameTuple> myNewAos;
-  aosoa::NEW_AOSOA<aosoa::STRUCTURE_OF_ARRAYS, MyNameTuple> myNewSoa;
-
-  std::tuple<int> tmp;
-
-  //
-  std::array<Obj, N> aos;
-  SoaObj soa;
+  aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, MyNamedTuple> aos;
+  aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, MyNamedTuple> soa;
 
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distrib(POS_MIN, POS_MAX);
+  std::uniform_int_distribution<> distribInt(SAMPLE_MIN, SAMPLE_MAX);
+  std::uniform_real_distribution<> distribFloat(SAMPLE_MIN, SAMPLE_MAX);
   for (int i = 0; i < N; ++i) {
-    int sample = distrib(gen);
-    aos.at(i).position = sample;
-    soa.position.at(i) = sample;
+    int sampleInt = distribInt(gen);
+    float sampleFloat = (float)distribFloat(gen);
+
+    MyNamedTuple tuple(sampleInt, sampleFloat);
+    aos.push_back(tuple);
+    soa.push_back(tuple);
   }
 
   auto t1 = std::chrono::high_resolution_clock::now();
-  int avgAOS = averagePositionAOS(aos);
+  int avgAosInt = averageInt(aos);
+  // double avgAosFloat = averageFloat(soa);
   auto t2 = std::chrono::high_resolution_clock::now();
   auto durationAos =
       std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
-  std::cout << "AverageAOS: " << avgAOS << std::endl;
+  std::cout << "AverageAosInt: " << avgAosInt << std::endl;
+  // std::cout << "AverageAosFloat: " << avgAosFloat << std::endl;
   std::cout << "Duration: " << durationAos.count() << std::endl;
 
   t1 = std::chrono::high_resolution_clock::now();
-  int avgSOA = averagePositionSOA(soa);
+  int avgSoaInt = averageInt(soa);
+  // double avgSoaFloat = averageFloat(soa);
   t2 = std::chrono::high_resolution_clock::now();
   auto durationSoa =
       std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
-  std::cout << "AverageSOA: " << avgSOA << std::endl;
+  std::cout << "AverageSoaInt: " << avgSoaInt << std::endl;
+  // std::cout << "AveragesSoaFloat: " << avgSoaFloat << std::endl;
   std::cout << "Duration: " << durationSoa.count() << std::endl;
 
   std::cout << "Done." << std::endl;

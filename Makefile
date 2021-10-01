@@ -17,7 +17,7 @@ build:
 
 debug:
 	mkdir -p build
-	cmake -B build -GNinja . && ninja -C build
+	cmake -B build -DCMAKE_BUILD_TYPE=Debug -GNinja . && ninja -C build
 
 clean:
 	rm -rf build

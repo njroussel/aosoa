@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
+else()
+  set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 message("Build type: ${CMAKE_BUILD_TYPE}")

@@ -24,6 +24,8 @@ class NamedTuple {
     }
   }
 
+  NamedTuple<Tail...>& tail() { return m_tail; }
+
  private:
   Type m_attr;
   NamedTuple<Tail...> m_tail;
