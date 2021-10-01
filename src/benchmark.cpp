@@ -59,22 +59,22 @@ int main() {
 
   auto t1 = std::chrono::high_resolution_clock::now();
   int avgAosInt = averageInt(aos);
-  // double avgAosFloat = averageFloat(soa);
+  double avgAosFloat = averageFloat(aos);
   auto t2 = std::chrono::high_resolution_clock::now();
   auto durationAos =
       std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
   std::cout << "AverageAosInt: " << avgAosInt << std::endl;
-  // std::cout << "AverageAosFloat: " << avgAosFloat << std::endl;
+  std::cout << "AverageAosFloat: " << avgAosFloat << std::endl;
   std::cout << "Duration: " << durationAos.count() << std::endl;
 
   t1 = std::chrono::high_resolution_clock::now();
   int avgSoaInt = averageInt(soa);
-  // double avgSoaFloat = averageFloat(soa);
+  double avgSoaFloat = averageFloat(soa);
   t2 = std::chrono::high_resolution_clock::now();
   auto durationSoa =
       std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
   std::cout << "AverageSoaInt: " << avgSoaInt << std::endl;
-  // std::cout << "AveragesSoaFloat: " << avgSoaFloat << std::endl;
+  std::cout << "AveragesSoaFloat: " << avgSoaFloat << std::endl;
   std::cout << "Duration: " << durationSoa.count() << std::endl;
 
   std::cout << "Done." << std::endl;

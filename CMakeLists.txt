@@ -29,7 +29,12 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
 
-add_executable(aosoa_demo
+add_executable(benchmark
     # Source files
-    src/aosoa_demo.cpp
+    src/benchmark.cpp
+    )
+
+add_executable(demo
+    # Source files
+    src/demo.cpp
     )
