@@ -6,8 +6,8 @@ struct CustomerId {};
 struct Balance {};
 using Customer = aosoa::NamedTuple<int, CustomerId, float, Balance>;
 
-using Customers = aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, Customer>;
-//using Customers = aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, Customer>;
+// using Customers = aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, Customer>;
+using Customers = aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, Customer>;
 
 int findMaxCustomerId(Customers customers) {
   std::size_t size = customers.size();
@@ -41,6 +41,9 @@ int main() {
   customers.push_back(c1);
   customers.push_back(c2);
   customers.push_back(c3);
+
+  // customers.other_get<Balance>(2);
+  float x = c1.other_get<Balance>();
 
   std::cout << findMaxCustomerId(customers) << std::endl;
   std::cout << averageBalance(customers) << std::endl;
