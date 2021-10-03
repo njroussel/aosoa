@@ -55,6 +55,30 @@ struct AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Type, Name, Tail...>> {
     }
   }
 
+  template <typename AttrName>
+  typename std::vector<
+      typename named_tuple_attribute_type<AttrName, tuple_type>::type>::iterator
+  begin() {
+    constexpr bool match = std::is_same<AttrName, Name>::value;
+    if constexpr (match) {
+      return m_vec.begin();
+    } else {
+      return m_tail.template begin<AttrName>();
+    }
+  }
+
+  template <typename AttrName>
+  typename std::vector<
+      typename named_tuple_attribute_type<AttrName, tuple_type>::type>::iterator
+  end() {
+    constexpr bool match = std::is_same<AttrName, Name>::value;
+    if constexpr (match) {
+      return m_vec.end();
+    } else {
+      return m_tail.template end<AttrName>();
+    }
+  }
+
   void push_back(NamedTuple<Type, Name, Tail...>& tuple) {
     m_vec.push_back(tuple.template get<Name>());
     m_tail.push_back(tuple.tail());
@@ -81,6 +105,30 @@ struct AOSOA<STRUCTURE_OF_ARRAYS, NamedTuple<Type, Name>> {
       static_assert(match, "Template value does not match the attribute name!");
     } else {
       return m_vec[index];
+    }
+  }
+
+  template <typename AttrName>
+  typename std::vector<
+      typename named_tuple_attribute_type<AttrName, tuple_type>::type>::iterator
+  begin() {
+    constexpr bool match = std::is_same<AttrName, Name>::value;
+    if constexpr (!match) {
+      static_assert(match, "Template value does not match the attribute name!");
+    } else {
+      return m_vec.begin();
+    }
+  }
+
+  template <typename AttrName>
+  typename std::vector<
+      typename named_tuple_attribute_type<AttrName, tuple_type>::type>::iterator
+  end() {
+    constexpr bool match = std::is_same<AttrName, Name>::value;
+    if constexpr (!match) {
+      static_assert(match, "Template value does not match the attribute name!");
+    } else {
+      return m_vec.end();
     }
   }
 

@@ -10,8 +10,8 @@ using Customer = aosoa::NamedTuple<int, CustomerId, float, Balance>;
 
 // Data layout can be changed in a single line by modifying the first
 // template arugment
-using Customers = aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, Customer>;
-// using Customers = aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, Customer>;
+// using Customers = aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, Customer>;
+using Customers = aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, Customer>;
 
 int findMaxCustomerId(Customers customers) {
   std::size_t size = customers.size();
@@ -25,6 +25,12 @@ int findMaxCustomerId(Customers customers) {
     // to be refactored if the `Customers` data layout is changed
 
     maxCustomerId = std::max(maxCustomerId, customerId);
+  }
+
+  auto itr = customers.begin<CustomerId>();
+  while (itr != customers.end<CustomerId>()) {
+    std::cout << *itr << std::endl;
+    itr++;
   }
 
   return maxCustomerId;
