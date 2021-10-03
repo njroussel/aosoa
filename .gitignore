@@ -1,6 +1,5 @@
 # build
 build/
 
-# IDE
-*.code-workspace
-.vscode/
+# Clangd
+.cache
