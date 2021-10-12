@@ -1,6 +1,5 @@
 #include <aosoa/aosoa.h>
 #include <aosoa/named_tuple.h>
-#include <limits.h>
 
 // Define a named tuple which will replace the `struct` in a traditional array
 // of structures (AOS) layout
@@ -13,27 +12,21 @@ using Customer = aosoa::NamedTuple<int, CustomerId, float, Balance>;
 // using Customers = aosoa::AOSOA<aosoa::ARRAY_OF_STRUCTURES, Customer>;
 using Customers = aosoa::AOSOA<aosoa::STRUCTURE_OF_ARRAYS, Customer>;
 
-int findMaxCustomerId(Customers customers) {
+float findMaxBalance(Customers customers) {
   std::size_t size = customers.size();
   // The `size()` method returns either the size of the underlying arrays (SOA)
   // or the origial array (AOS).
 
-  int maxCustomerId = INT_MIN;
+  float maxBalance = 0;
   for (size_t i = 0; i < size; ++i) {
-    int customerId = customers.get<CustomerId>(i);
+    float balance = customers.get<Balance>(i);
     // Attribute access is independent of data layout - this will not have
     // to be refactored if the `Customers` data layout is changed
 
-    maxCustomerId = std::max(maxCustomerId, customerId);
+    maxBalance = std::max(maxBalance, balance);
   }
 
-  auto itr = customers.begin<CustomerId>();
-  while (itr != customers.end<CustomerId>()) {
-    std::cout << *itr << std::endl;
-    itr++;
-  }
-
-  return maxCustomerId;
+  return maxBalance;
 }
 
 int main() {
@@ -46,7 +39,7 @@ int main() {
   customers.push_back(c2);
   customers.push_back(c3);
 
-  std::cout << findMaxCustomerId(customers) << std::endl;
+  std::cout << findMaxBalance(customers) << std::endl;
 
   return EXIT_SUCCESS;
 }
